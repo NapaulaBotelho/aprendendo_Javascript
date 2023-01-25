@@ -17,9 +17,12 @@
 
     <script>
       const canvasEl = document.querySelector("canvas"); // Variavel Elemento
-      const canvasCtx = canvasEl.getContext("2d"); // Variavel Contexto
-      const largLinha = 15; // Variavel Largura da linha
-      const gap_x = 10;
+      const canvasCtx = canvasEl.getContext("2d");// Variavel Contexto
+      
+      const gapX = 10;
+      const mouse = { x: 0, y: 0 }
+
+
 
       const campo = {
         w: window.innerWidth,
@@ -41,39 +44,44 @@
           canvasCtx.fillRect(campo.w / 2 - this.w / 2, 0, this.w, this.h);
           
         },
-      };
+      }
 
       const raq_esq = {
 
-        x:gap_x,
-        y:400,
-        w:linha.w,
-        h:200,
-
+        x: gapX,
+        y: 0,
+        w: linha.w,
+        h: 200,
+        _move: function () {
+          this.y = mouse.y - this.h / 2
+        },
+      
         draw: function () {
           canvasCtx.fillStyle = "#ffffff";
-
           canvasCtx.fillRect(this.x, this.y, linha.w , this.h);
 
+          this._move() 
         
-        }
-        
-
+        },
       }
 
       const raq_dir = {
 
-        x: campo.w - linha.w - gap_x,
+        x:campo.w - linha.w - gapX,
         y:400,
-        w:linha.w ,
-        h:200 ,
+        w:linha.w,
+        h:200,
+        _move: function() {
+          this.y = bola.y
+        },
 
         draw: function() {
-            canvasCtx.fillStyle = "#ffffff";
-            canvasCtx.fillRect(this.x, this.y, linha.w, this.h);
+          canvasCtx.fillStyle = "#ffffff";
+          canvasCtx.fillRect(this.x, this.y, linha.w, this.h);
+            
+          this._move()
 
-        }
-
+        },
 
       }
 
@@ -81,8 +89,6 @@
 
         pessoa:1,
         maquina:2,
-       
-
 
         draw: function () {
             canvasCtx.fillStyle = "#01341D";
@@ -92,9 +98,9 @@
 
             canvasCtx.fillText(this.pessoa, campo.w / 4, 50);
 
-            canvasCtx.fillText(this.maquina, campo.w / 4 + campo.w / 2,50);
+            canvasCtx.fillText(this.maquina, campo.w / 4 + campo.w / 2, 50);
 
-        }
+        },
 
       }
 
@@ -103,6 +109,11 @@
         x:200,
         y:300,
         r:20,
+        speed:5,
+        _move: function () {
+            this.x += 1 * this.speed
+            this.y += 1 * this.speed
+        },
 
         draw: function () {
 
@@ -111,7 +122,9 @@
             canvasCtx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
             canvasCtx.fill();
 
-        }
+            this._move()
+
+        },
 
       }
 
@@ -128,17 +141,17 @@
       function draw() {
         //primierio tem que definir a cor e depois desenhar
 
-        campo.draw(); // Chamando metodo para  desenhar o campos P2
+        campo.draw() // Chamando metodo para  desenhar o campos P2
 
-        linha.draw(); // Chamando metodo para  desenhar a linha do meio do campos P2
+        linha.draw() // Chamando metodo para  desenhar a linha do meio do campos P2
 
-        raq_esq.draw(); // Chamando metodo para desenhar a raquete esquerda
+        raq_esq.draw() // Chamando metodo para desenhar a raquete esquerda
 
-        raq_dir.draw(); // Chamando metodo para desenhar a raquete direita
+        raq_dir.draw() // Chamando metodo para desenhar a raquete direita
 
-        placar.draw(); // Chamando o metodo para desenhar o placar
+        placar.draw() // Chamando o metodo para desenhar o placar
 
-        bola.draw(); // Chamando metodo para desenhar  a bolinha
+        bola.draw() // Chamando metodo para desenhar  a bolinha
 
        
 
@@ -195,9 +208,38 @@
         //   50
         // );
       }
+      
+      
+    
 
-      setup(); //Chama o setup
-      draw(); // Desenha os elementos na tela
+      window.animateFrame = (function () {
+        return ( 
+          window.requestAnimationFrame || 
+          window.webkitRequestAnimationFrame()||
+          window.mozRequestAnimationFrame() ||
+          window.oRequestAnimationFrame() ||
+          window.msRequestAnimationFrame() ||
+          function(callback) {
+            return window.setTimeout(callback, 1000 / 60)
+          }
+        )
+      }) ()
+
+      function main() {
+        animateFrame(main)
+        draw()
+      } 
+
+      setup() //Chama o setup
+      main()  // Desenha os elementos na tela
+
+      canvasEl.addEventListener("mousemove", function (e) {
+        mouse.x = e.pageX
+        mouse.y = e.pageY
+      })
+      
+
+      //window.setInterval(draw, 1000/60) fica deixando a animação engasgando
     </script>
   </body>
 </html>
