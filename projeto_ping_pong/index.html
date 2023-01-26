@@ -32,7 +32,7 @@
           canvasCtx.fillStyle = "#286047";
           canvasCtx.fillRect(0, 0, this.w, this.h); //Metodo | o THIS faz referencia ao objeto. | Todas as propriedades ou funções que estiverem INTERNAMENTE dentro do objeto, pode ser chamado pelo THIS
         },
-      };
+      }
 
       const linha = {
         w: 15,
@@ -67,16 +67,28 @@
 
       const raq_dir = {
 
-        x:campo.w - linha.w - gapX,
-        y:400,
-        w:linha.w,
+        x: campo.w - linha.w - gapX,
+        y: 0,
+        w: linha.w,
         h:200,
+        speed:5,
         _move: function() {
-          this.y = bola.y
+          if(this.y + this.h / 2 < bola.y + bola.r) {
+
+            this.y += this.speed
+          } else {
+            this.y += this.speed
+
+          }
+        },
+
+        speedUp: function () {
+          this.speed += 2
         },
 
         draw: function() {
           canvasCtx.fillStyle = "#ffffff";
+          
           canvasCtx.fillRect(this.x, this.y, linha.w, this.h);
             
           this._move()
@@ -87,8 +99,8 @@
 
       const placar = {
 
-        pessoa:1,
-        maquina:2,
+        pessoa:0,
+        maquina:0,
         increasePessoa: function() {
           this.pessoa++
         },
@@ -113,8 +125,8 @@
 
 
       const bola = {
-        x:0,
-        y:0,
+        x: campo.w / 2,
+        y:campo.h / 2,
         r:20,
         speed:5,
         directionX: 1,
@@ -173,14 +185,22 @@
         },
 
         _reverseX: function () {
-          this.directionX = this.directionX * -1
+          this.directionX *= -1
         },
 
         _reverseY: function () {
-          this.directionY = this.directionY * -1
+          this.directionY *= -1
+        },
+
+        _speedUp: function () {
+          this.speed += 2
+
         },
 
         _pointUp: function () {
+          this._speedUp()
+          raq_dir.speedUp()
+
           this.x = campo.w / 2
           this.y = campo.h / 2
         },
